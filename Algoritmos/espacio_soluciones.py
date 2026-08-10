@@ -8,7 +8,7 @@ class Nodo:
         self.costo = costo
 
     def __str__(self):
-        return f"Nodo(estado={self.estado}, accion={self.accion}, costo={self.↪costo})"
+        return f"Nodo(estado={self.estado}, accion={self.accion}, costo={self.costo})"
 
 class Frontier:
     def __init__(self):
