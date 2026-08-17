@@ -34,15 +34,3 @@ class Frontier:
         heapq.heappush(self.frontierNode, (node.costo, self.cont, node))
         self.cont += 1
 
-class Problem:
-    def __init__(self, start, goals, maze):
-        self.start = start
-        self.goals = goals
-        self.maze = maze
-
-    def is_goal(self, state):
-        return state in self.goals
-
-    def result_actions(self, state):
-        
-

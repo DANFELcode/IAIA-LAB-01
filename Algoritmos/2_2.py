@@ -4,17 +4,17 @@ import heapq
 # Modele la estructura de datos para el espacio de búsqueda
 # ============================================================
 
-class Nodo:
-    def __init__(self, estado, padre=None, accion=None, costo=0):
-        self.estado = estado
-        self.padre = padre
-        self.accion = accion
-        self.costo = costo
+class Node:
+    def __init__(self, state, parent=None, action=None, cost=0):
+        self.state = state
+        self.parent = parent
+        self.action = action
+        self.cost = cost
     def __str__(self):
-        return f"Nodo(estado={self.estado}, accion={self.accion}, costo={self.costo})"
+        return f"Node(state={self.state}, action={self.action}, cost={self.cost})"
 
     def representation(self):
-        return self.estado
+        return self.state
 
 # ============================================================
 # Modele frontera del espacio de búsqueda
@@ -51,47 +51,47 @@ class Frontier:
 # Modele un problema del espacio de búsqueda genérico
 # ============================================================
 
-class Problema:
-    def __init__(self, estadoInicial, objetivos, grafo, heuristicas):
-        self.estadoInicial = estadoInicial
-        self.objetivos = objetivos
-        self.grafo = grafo
-        self.heuristicas = heuristicas
+class Problem:
+    def __init__(self, initial_state, goals, graph, heuristics):
+        self.initial_state = initial_state
+        self.goals = goals
+        self.graph = graph
+        self.heuristics = heuristics
 
-    def is_goal(self, estado):
-        return estado in self.objetivos
+    def is_goal(self, state):
+        return state in self.goals
 
-    def result_actions(self, estado):
-        acciones = self.grafo[estado]
+    def result_actions(self, state):
+        actions = self.graph[state]
 
-        return set(acciones.keys())
+        return set(actions.keys())
 
-    def action_cost(self, estado, accion, estado_1):
-        acciones = self.grafo[estado]
-        return acciones[estado_1]
+    def action_cost(self, state, action, state_1):
+        actions = self.graph[state]
+        return actions[state_1]
 
-    def heuristic(self, estado):
-        return self.heuristicas[estado]
+    def heuristic(self, state):
+        return self.heuristics[state]
 
     
 # ============================================================
 # 1. Represente el nodo de fallo del espacio de búsqueda
 # ============================================================
     
-FALLO = Nodo(None)
+FAIL = Node(None)
 
 # ============================================================
 # 2. Implemente la función para expandir nodos fronterizos
 # ============================================================
-def expand(problema, nodo):
-    estado = nodo.estado
-    vecinos = problema.result_actions(estado)
-    vecinos = list(vecinos)
+def expand(problem, node):
+    state = node.state
+    neighbors = problem.result_actions(state)
+    neighbors = list(neighbors)
     expansion = []
-    for vecino in vecinos:
-        costo = problema.action_cost(estado, vecino, vecino) + nodo.costo
-        nodo_1 = Nodo(vecino, nodo, vecino, costo)
-        expansion.append(nodo_1)
+    for neighbor in neighbors:
+        cost = problem.action_cost(state, neighbor, neighbor) + node.cost
+        node_1 = Node(neighbor, node, neighbor, cost)
+        expansion.append(node_1)
 
     return expansion
 
@@ -100,20 +100,20 @@ def expand(problema, nodo):
 # 3. Implemente el algoritmo de búsqueda del mejor primero (Best-First Search)
 # ============================================================
 
-def best_first_search(problema, evaluation_function):
-    nodo_raiz = Nodo(problema.estadoInicial, None, None, 0)
-    frontera = Frontier(evaluation_function)
-    frontera.add(nodo_raiz)
+def best_first_search(problem, evaluation_function):
+    root_node = Node(problem.initial_state, None, None, 0)
+    frontier = Frontier(evaluation_function)
+    frontier.add(root_node)
 
-    while not frontera.is_empty():
-        nodo_actual = frontera.pop()
+    while not frontier.is_empty():
+        current_node = frontier.pop()
 
-        if problema.is_goal(nodo_actual.estado):
-            return nodo_actual
+        if problem.is_goal(current_node.state):
+            return current_node
 
-        for vecino in expand(problema, nodo_actual):
-            frontera.add(vecino)
-    return FALLO
+        for neighbor in expand(problem, current_node):
+            frontier.add(neighbor)
+    return FAIL
         
 
 # ============================================================
@@ -121,22 +121,22 @@ def best_first_search(problema, evaluation_function):
 # usando `Node.representation()`
 # ============================================================
 
-def path_actions(nodo):
-    nodos = []
+def path_actions(node):
+    nodes = []
     while True:        
-        nodos.append(nodo)        
-        if nodo.padre == None:
+        nodes.append(node)        
+        if node.parent == None:
             break
-        nodo = nodo.padre
+        node = node.parent
 
-    nodos.reverse()
+    nodes.reverse()
 
-    acciones = []
-    for nodo in nodos:
-        accion = nodo.representation()
-        acciones.append(accion)
+    actions = []
+    for node in nodes:
+        action = node.state
+        actions.append(action)
 
-    return acciones
+    return actions
 
 # ============================================================
 # 2. Represente el problema de búsqueda de ejemplo
@@ -144,9 +144,9 @@ def path_actions(nodo):
 # ============================================================
 
 
-inicial = "S"
-objetivos = {"G"}
-grafo = {
+initial = "S"
+goals = {"G"}
+graph = {
     "S": {"A": 3, "D": 4},
     "A": {"S": 3, "D": 5, "B": 4},
     "D": {"S": 4, "A": 5, "E": 2},
@@ -156,9 +156,9 @@ grafo = {
     "F": {"E": 4, "G": 3},
     "G": {"F": 3}
 }
-heuristicas = {"S": 11, "A": 10.4, "D": 8.9, "B": 6.7, "E": 6.9, "C": 4.0, "F": 3.0, "G": 0}
+heuristics = {"S": 11, "A": 10.4, "D": 8.9, "B": 6.7, "E": 6.9, "C": 4.0, "F": 3.0, "G": 0}
 
-problema = Problema(inicial, objetivos, grafo, heuristicas)
+problem = Problem(initial, goals, graph, heuristics)
 
 # ============================================================
 # 3. Use la implementación del algoritmo de búsqueda del mejor primero
@@ -166,7 +166,7 @@ problema = Problema(inicial, objetivos, grafo, heuristicas)
 # ============================================================
 
 
-resultado = best_first_search(problema, lambda nodo: nodo.costo)
+resultado = best_first_search(problem, lambda node: node.cost)
 
 # ============================================================
 # 4. Use la función para visualizar la secuencia de acciones
@@ -175,9 +175,9 @@ resultado = best_first_search(problema, lambda nodo: nodo.costo)
 # ============================================================
 
 
-solucion = path_actions(resultado)
-solucion_visual = " -> ".join(solucion)
-print(solucion_visual)
+solution = path_actions(resultado)
+solution_visual = " -> ".join(solution)
+print(solution_visual)
     
 
 
