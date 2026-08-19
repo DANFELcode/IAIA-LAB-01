@@ -133,12 +133,7 @@ def path_actions(node):
 
     actions = []
     for node in nodes:
-        # Use node.representation() if available, otherwise fallback to node.state
-        rep = getattr(node, 'representation', None)
-        if callable(rep):
-            action = rep()
-        else:
-            action = node.state
+        action = node.state
         actions.append(action)
 
     return actions
