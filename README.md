@@ -2,7 +2,7 @@
 
 **Grupo:** Azul
 **Curso:** Inteligencia Artificial (IAIA) — Escuela Colombiana de Ingeniería
-**Integrantes:** _(completar nombres del equipo)_
+**Integrantes:** Daniel Felipe Sua Siempira Juan David Moreno D'Aleman
 
 ## Descripción
 
